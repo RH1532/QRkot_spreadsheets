@@ -17,7 +17,7 @@ def investment_process(
             if obj.invested_amount == obj.full_amount:
                 obj.fully_invested = True
                 obj.close_date = datetime.now()
+        updated.append(source)
         if target.fully_invested:
             break
-        updated.append(source)
     return updated

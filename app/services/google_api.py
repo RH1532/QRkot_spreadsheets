@@ -4,7 +4,8 @@ from aiogoogle import Aiogoogle
 
 from app.core.config import settings
 
-FORMAT = "%Y/%m/%d %H:%M:%S" 
+FORMAT = "%Y/%m/%d %H:%M:%S"
+
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
     now_date_time = datetime.now().strftime(FORMAT)
@@ -43,28 +44,30 @@ async def set_user_permissions(
 
 async def spreadsheets_update_value(
         spreadsheetid: str,
-        reservations: list,
+        charity_projects: list,
         wrapper_services: Aiogoogle
 ) -> None:
     now_date_time = datetime.now().strftime(FORMAT)
     service = await wrapper_services.discover('sheets', 'v4')
     table_values = [
         ['Отчет от', now_date_time],
-        ['Количество регистраций переговорок'],
-        ['ID переговорки', 'Кол-во бронирований']
+        ['Топ проектов по скорости закрытия'],
+        ['Название проекта', 'Время сбора', 'Описание']
     ]
-    for res in reservations:
-        new_row = [str(res['meetingroom_id']), str(res['count'])]
+    for project in charity_projects:
+        new_row = [str(project.name),
+                   str(project.close_date),
+                   str(project.description)]
         table_values.append(new_row)
 
     update_body = {
         'majorDimension': 'ROWS',
         'values': table_values
     }
-    response = await wrapper_services.as_service_account(
+    await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheetid,
-            range='A1:E30',
+            range='A1:С30',
             valueInputOption='USER_ENTERED',
             json=update_body
         )

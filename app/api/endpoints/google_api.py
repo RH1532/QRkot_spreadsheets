@@ -1,7 +1,5 @@
 from typing import List
 
-from datetime import datetime
-
 from aiogoogle import Aiogoogle
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,4 +34,4 @@ async def get_report(
     await spreadsheets_update_value(spreadsheetid,
                                     charity_project,
                                     wrapper_services)
-    return charity_project 
+    return charity_project
