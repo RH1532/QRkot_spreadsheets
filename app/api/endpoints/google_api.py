@@ -26,12 +26,14 @@ async def get_report(
         wrapper_services: Aiogoogle = Depends(get_service)
 ):
     """Только для суперюзеров."""
-    charity_project = await charity_project_crud.get_projects_by_completion_rate(
-        session
-    )
-    spreadsheetid = await spreadsheets_create(wrapper_services)
-    await set_user_permissions(spreadsheetid, wrapper_services)
-    await spreadsheets_update_value(spreadsheetid,
-                                    charity_project,
-                                    wrapper_services)
-    return charity_project
+    charity_project = await (
+        charity_project_crud.get_projects_by_completion_rate(session))
+    spreadsheet_id, spreadsheet_url = await spreadsheets_create(wrapper_services)
+    await set_user_permissions(spreadsheet_id, wrapper_services)
+    try:
+        await spreadsheets_update_value(spreadsheet_id,
+                                        charity_project,
+                                        wrapper_services)
+    except Exception as e:
+        print(f'Произошла ошибка при обновлении таблицы: {e}')
+    return spreadsheet_url
