@@ -1,5 +1,3 @@
-from datetime import datetime
-
 FORMAT = "%Y/%m/%d %H:%M:%S"
 
 
@@ -8,7 +6,7 @@ MAX_COLUMNS = 3
 
 SPREADSHEET_BODY = {
     'properties': {
-        'title': f'Отчет от {datetime.now().strftime(FORMAT)}',
+        'title': 'Отчет от',
         'locale': 'ru_RU',
     },
     'sheets': [
@@ -26,7 +24,7 @@ SPREADSHEET_BODY = {
     ],
 }
 TABLE_HEADER = [
-    ['Отчет от', datetime.now().strftime(FORMAT)],
+    ['Отчет от', None],
     ['Топ проектов по скорости закрытия'],
     ['Название проекта', 'Время сбора', 'Описание']
 ]

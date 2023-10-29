@@ -1,3 +1,5 @@
+import copy
+
 from datetime import datetime
 
 from aiogoogle import Aiogoogle
@@ -12,7 +14,7 @@ from .constants import (FORMAT,
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
     now_date_time = datetime.now().strftime(FORMAT)
-    spreadsheet_body = SPREADSHEET_BODY.copy()
+    spreadsheet_body = copy.deepcopy(SPREADSHEET_BODY)
     spreadsheet_body['properties']['title'] = f'Отчет от {now_date_time}'
     service = await wrapper_services.discover('sheets', 'v4')
     response = await wrapper_services.as_service_account(
@@ -43,7 +45,7 @@ async def spreadsheets_update_value(
         wrapper_services: Aiogoogle
 ) -> None:
     now_date_time = datetime.now().strftime(FORMAT)
-    table_header = TABLE_HEADER.copy()
+    table_header = copy.deepcopy(TABLE_HEADER)
     table_header[0][1] = now_date_time
     service = await wrapper_services.discover('sheets', 'v4')
     table_values = [
