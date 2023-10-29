@@ -2,14 +2,13 @@ from datetime import datetime
 
 FORMAT = "%Y/%m/%d %H:%M:%S"
 
-NOW_DATE_TIME = datetime.now().strftime(FORMAT)
 
 MAX_ROWS = 30
 MAX_COLUMNS = 3
 
 SPREADSHEET_BODY = {
     'properties': {
-        'title': f'Отчет от {NOW_DATE_TIME}',
+        'title': f'Отчет от {datetime.now().strftime(FORMAT)}',
         'locale': 'ru_RU',
     },
     'sheets': [
@@ -19,15 +18,15 @@ SPREADSHEET_BODY = {
                 'sheetId': 0,
                 'title': 'Лист1',
                 'gridProperties': {
-                    'rowCount': 100,
-                    'columnCount': 3,
+                    'rowCount': MAX_ROWS,
+                    'columnCount': MAX_COLUMNS,
                 },
             },
         },
     ],
 }
 TABLE_HEADER = [
-    ['Отчет от', NOW_DATE_TIME],
+    ['Отчет от', datetime.now().strftime(FORMAT)],
     ['Топ проектов по скорости закрытия'],
     ['Название проекта', 'Время сбора', 'Описание']
 ]

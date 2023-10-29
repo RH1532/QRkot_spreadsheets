@@ -1,7 +1,7 @@
 from typing import List
 
 from aiogoogle import Aiogoogle
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -35,5 +35,8 @@ async def get_report(
                                         charity_project,
                                         wrapper_services)
     except ValueError as e:
-        raise ValueError(f'Произошла ошибка при обновлении таблицы: {e}')
+        raise HTTPException(
+            status_code=422,
+            detail=f'Произошла ошибка при обновлении таблицы: {e}'
+        )
     return spreadsheet_url

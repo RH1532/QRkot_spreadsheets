@@ -1,13 +1,19 @@
+from datetime import datetime
+
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
-from .constants import (MAX_ROWS,
+from .constants import (FORMAT,
+                        MAX_ROWS,
                         MAX_COLUMNS,
                         SPREADSHEET_BODY,
                         TABLE_HEADER)
 
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
+    now_date_time = datetime.now().strftime(FORMAT)
+    spreadsheet_body = SPREADSHEET_BODY.copy()
+    spreadsheet_body['properties']['title'] = f'Отчет от {now_date_time}'
     service = await wrapper_services.discover('sheets', 'v4')
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=SPREADSHEET_BODY)
@@ -36,9 +42,12 @@ async def spreadsheets_update_value(
         charity_projects: list,
         wrapper_services: Aiogoogle
 ) -> None:
+    now_date_time = datetime.now().strftime(FORMAT)
+    table_header = TABLE_HEADER.copy()
+    table_header[0][1] = now_date_time
     service = await wrapper_services.discover('sheets', 'v4')
     table_values = [
-        *TABLE_HEADER,
+        *table_header,
         *[list(map(
             str,
             [project.name,
@@ -46,11 +55,13 @@ async def spreadsheets_update_value(
              project.description])) for project in charity_projects]
     ]
     num_rows = len(table_values)
-    num_cols = max(len(row) for row in table_values)
+    num_cols = max(map(len, table_values))
     if num_rows > MAX_ROWS or num_cols > MAX_COLUMNS:
-        raise ValueError(f'Данные превышают максимальные размеры таблицы. '
-                         f'Количество строк: {num_rows}, максимальное: {MAX_ROWS}. '
-                         f'Количество столбцов: {num_cols}, максимальное: {MAX_COLUMNS}')
+        raise ValueError(
+            f'Данные превышают максимальные размеры таблицы. '
+            f'Количество строк: {num_rows}, максимальное: {MAX_ROWS}. '
+            f'Количество столбцов: {num_cols}, максимальное: {MAX_COLUMNS}'
+        )
     update_body = {
         'majorDimension': 'ROWS',
         'values': table_values
