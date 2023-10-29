@@ -34,6 +34,6 @@ async def get_report(
         await spreadsheets_update_value(spreadsheet_id,
                                         charity_project,
                                         wrapper_services)
-    except Exception as e:
-        print(f'Произошла ошибка при обновлении таблицы: {e}')
+    except ValueError as e:
+        raise ValueError(f'Произошла ошибка при обновлении таблицы: {e}')
     return spreadsheet_url
